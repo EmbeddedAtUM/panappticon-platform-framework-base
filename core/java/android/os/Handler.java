@@ -19,7 +19,12 @@ package android.os;
 import android.util.Log;
 import android.util.Printer;
 
+//BEGIN CONFIG_EVENT_LOGGING
+import android.os.Process;
+import java.util.EventLogging;
+//END CONFIG_EVENT_LOGGING
 import java.lang.reflect.Modifier;
+
 
 /**
  * A Handler allows you to send and process {@link Message} and Runnable
@@ -88,7 +93,11 @@ public class Handler {
      * Handle system messages here.
      */
     public void dispatchMessage(Message msg) {
-        if (msg.callback != null) {
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventLogging = EventLogging.getInstance();
+	eventLogging.addEvent(EventLogging.MSG_DEQUEUE, mQueue.queueid, msg.messageid);
+	//END CONFIG_EVENT_LOGGING
+	if (msg.callback != null) {
             handleCallback(msg);
         } else {
             if (mCallback != null) {
@@ -443,7 +452,13 @@ public class Handler {
         if (delayMillis < 0) {
             delayMillis = 0;
         }
-        return sendMessageAtTime(msg, SystemClock.uptimeMillis() + delayMillis);
+        //BEGIN CONFIG_EVENT_LOGGING
+	if(delayMillis > 0){
+		EventLogging eventLogging = EventLogging.getInstance();
+		eventLogging.addEvent(EventLogging.MSG_ENQUEUE_DELAYED, (int)delayMillis, 0);
+	}
+	//END CONFIG_EVENT_LOGGING
+	return sendMessageAtTime(msg, SystemClock.uptimeMillis() + delayMillis);
     }
 
     /**

@@ -21,6 +21,10 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+//BEGING CONFIG_EVENT_LOGGING
+import java.util.EventLogging;
+import android.os.Process;
+//END CONFIG_EVENT_LOGGING
 /**
  * Low-level class holding the list of messages to be dispatched by a
  * {@link Looper}.  Messages are not added directly to a MessageQueue,
@@ -52,6 +56,14 @@ public class MessageQueue {
     private native void nativeDestroy();
     private native void nativePollOnce(int ptr, int timeoutMillis);
     private native void nativeWake(int ptr);
+
+    /**
+     * BEGIN CONFIG_EVENT_LOGGING
+     * @hide
+     */
+    public int queueid;
+    private static int TotalCount = 0;
+    //END CONFIG_EVENT_LOGGING
 
     /**
      * Callback interface for discovering when a thread is going to block
@@ -101,9 +113,13 @@ public class MessageQueue {
     }
 
     MessageQueue(boolean quitAllowed) {
-        mQuitAllowed = quitAllowed;
+        //BEGIN CONFIG_EVENT_LOGGING
+	queueid = Process.myTid();
+	//END CONFIG_EVENT_LOGGING
+	mQuitAllowed = quitAllowed;
         nativeInit();
-    }
+        
+	}
 
     @Override
     protected void finalize() throws Throwable {
@@ -122,8 +138,14 @@ public class MessageQueue {
             if (nextPollTimeoutMillis != 0) {
                 Binder.flushPendingCommands();
             }
+	    //BEGIN CONFIG_EVENT_LOGGING
+	    EventLogging eventlogging = EventLogging.getInstance();
+	    eventlogging.addEvent(EventLogging.MSG_POLL_NATIVE);
+	    //END
             nativePollOnce(mPtr, nextPollTimeoutMillis);
-
+	    //BEGIN CONFIG_EVENT_LOGGING
+	    eventlogging.addEvent(EventLogging.MSG_POLL_DONE);
+	    //END
             synchronized (this) {
                 if (mQuiting) {
                     return null;
@@ -287,7 +309,6 @@ public class MessageQueue {
         if (msg.target == null) {
             throw new AndroidRuntimeException("Message must have a target.");
         }
-
         boolean needWake;
         synchronized (this) {
             if (mQuiting) {
@@ -296,6 +317,12 @@ public class MessageQueue {
                 Log.w("MessageQueue", e.getMessage(), e);
                 return false;
             }
+	    //BEGING CONFIG_EVENT_LOGGING
+	    msg.messageid = TotalCount;
+	    TotalCount ++;
+	    EventLogging eventlogging = EventLogging.getInstance();	
+	    eventlogging.addEvent(EventLogging.MSG_ENQUEUE, queueid, msg.messageid);
+	    //END CONFIG_EVENT_LOGGING
 
             msg.when = when;
             Message p = mMessages;

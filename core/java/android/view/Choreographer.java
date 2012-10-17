@@ -474,7 +474,12 @@ public final class Choreographer {
                 if (DEBUG) {
                     Log.d(TAG, "Scheduling next frame in " + (nextFrameTime - now) + " ms.");
                 }
-                Message msg = mHandler.obtainMessage(MSG_DO_FRAME);
+		//BEGIN CONFIG_EVNET_LOGGING
+                //Log.i("Lide", "Update display");
+		//EventLogging eventLogging = EventLogging.getInstance();
+		//eventLogging.addEvent(EventLogging.UI_TRAVERSAL, 0,0);
+		//END 
+		Message msg = mHandler.obtainMessage(MSG_DO_FRAME);
                 msg.setAsynchronous(true);
                 mHandler.sendMessageAtTime(msg, nextFrameTime);
             }
@@ -519,7 +524,6 @@ public final class Choreographer {
             mFrameScheduled = false;
             mLastFrameTimeNanos = frameTimeNanos;
         }
-
         doCallbacks(Choreographer.CALLBACK_INPUT, frameTimeNanos);
         doCallbacks(Choreographer.CALLBACK_ANIMATION, frameTimeNanos);
         doCallbacks(Choreographer.CALLBACK_TRAVERSAL, frameTimeNanos);

@@ -1170,7 +1170,8 @@ class BrowserFrame extends Handler {
     }
 
     private void didFinishLoading() {
-      if (mKeyStoreHandler != null) {
+        Log.i(LOGTAG,"Lide: page finish loading");
+	if (mKeyStoreHandler != null) {
           mKeyStoreHandler.installCert(mContext);
           mKeyStoreHandler = null;
       }

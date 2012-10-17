@@ -83,6 +83,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+//BEGIN CONFIG_EVENT_LOGGING
+import java.util.EventLogging;
+//END
 /**
  * An activity is a single, focused thing that the user can do.  Almost all
  * activities interact with the user, so the Activity class takes care of
@@ -1030,6 +1033,10 @@ public class Activity extends ContextThemeWrapper
         }
 
         getApplication().dispatchActivityStarted(this);
+    	//BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventLogging = EventLogging.getInstance();
+	eventLogging.addEvent(EventLogging.EVENT_FOREGROUND, 0,0);
+	//END
     }
 
     /**
@@ -1270,6 +1277,11 @@ public class Activity extends ContextThemeWrapper
         if (DEBUG_LIFECYCLE) Slog.v(TAG, "onPause " + this);
         getApplication().dispatchActivityPaused(this);
         mCalled = true;
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventLogging = EventLogging.getInstance();
+	eventLogging.addEvent(EventLogging.EVENT_EXIT_FOREGROUND, 0,0);
+	eventLogging.exportQueue();
+	//END
     }
 
     /**
@@ -1358,6 +1370,9 @@ public class Activity extends ContextThemeWrapper
         if (mActionBar != null) mActionBar.setShowHideAnimationEnabled(false);
         getApplication().dispatchActivityStopped(this);
         mCalled = true;
+        //BEGIN CONFIG_EVENT_LOGGING
+	Log.i("Lide","onStop is called");
+	//END
     }
 
     /**

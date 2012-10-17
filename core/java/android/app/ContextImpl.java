@@ -1272,7 +1272,6 @@ class ContextImpl extends Context {
         if (permission == null) {
             throw new IllegalArgumentException("permission is null");
         }
-
         try {
             return ActivityManagerNative.getDefault().checkPermission(
                     permission, pid, uid);

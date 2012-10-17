@@ -86,6 +86,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+//BEGIN CONFIG_EVENT_LOGGING
+import java.util.EventLogging;
+//END CONFIG_EVENT_LOGGING
 /**
  * The top of a view hierarchy, implementing the needed protocol between View
  * and the WindowManager.  This is for the most part an internal implementation
@@ -4211,6 +4214,11 @@ public final class ViewRootImpl implements ViewParent,
     final class TraversalRunnable implements Runnable {
         @Override
         public void run() {
+	    //BEGING CONFIG_EVENT_LOGGING
+	    //Log.d("Lide", "update display in ViewRootIml");
+	    EventLogging eventLogging = EventLogging.getInstance();
+	    eventLogging.addEvent(EventLogging.UI_TRAVERSAL, 0,0);
+	    //END CONFIG_EVENT_LOGGING
             doTraversal();
         }
     }
@@ -4223,7 +4231,12 @@ public final class ViewRootImpl implements ViewParent,
 
         @Override
         public void onInputEvent(InputEvent event) {
-            enqueueInputEvent(event, this, 0, true);
+            //BEGIN CONFIG_EVENT_LOGGING
+	    //Log.i("Lide", "input event!");
+	    EventLogging eventLogging = EventLogging.getInstance();
+	    eventLogging.addEvent(EventLogging.UI_INPUT, 0,0);
+	    //END CONFIG_EVENT_LOGGING
+	     enqueueInputEvent(event, this, 0, true);
         }
 
         @Override

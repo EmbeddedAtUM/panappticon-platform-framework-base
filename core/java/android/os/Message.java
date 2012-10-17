@@ -100,6 +100,13 @@ public final class Message implements Parcelable {
     private static final int MAX_POOL_SIZE = 50;
 
     /**
+     * BEGIN CONFIG_EVENT_LOGGING
+     * @hide
+     */
+    public int messageid;
+   // private static int TotalCount = 0;
+    //END CONFIG_EVENT_LOGGING
+    /**
      * Return a new Message instance from the global pool. Allows us to
      * avoid allocating new objects in many cases.
      */
@@ -110,10 +117,21 @@ public final class Message implements Parcelable {
                 sPool = m.next;
                 m.next = null;
                 sPoolSize--;
+		
+		//BEGIN CONFIG_EVENT_LOGGING
+		//m.messageid = TotalCount;
+		//TotalCount ++;
+		//END CONFIG_EVENT_LOGGING
                 return m;
             }
         }
-        return new Message();
+	//BEGIN CONFIG_EVENT_LOGGING
+	Message m = new Message();
+//	m.messageid = TotalCount;
+//	TotalCount ++;
+	return m;
+	//END CONFIG_EVENT_LOGGING
+        //return new Message();
     }
 
     /**

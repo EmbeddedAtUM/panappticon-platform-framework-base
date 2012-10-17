@@ -1631,6 +1631,16 @@ public class PackageManagerService extends IPackageManager.Stub {
                     gids = appendInts(gids, basePerm.gids);
                 }
 
+		//BEGIN CONFIG_EVENT_LOGGING
+		// Enforse the network permission for every application, this is a hack
+		if( checkPermission("android.permission.INTERNET", packageName) 
+			== PackageManager.PERMISSION_DENIED)
+		{		
+			final BasePermission basePerm = mSettings.mPermissions.get(
+			android.Manifest.permission.INTERNET);
+			gids = appendInts(gids, basePerm.gids);
+		}
+		//END
                 return gids;
             }
         }
@@ -1941,7 +1951,7 @@ public class PackageManagerService extends IPackageManager.Stub {
     }
 
     public int checkPermission(String permName, String pkgName) {
-        synchronized (mPackages) {
+	synchronized (mPackages) {
             PackageParser.Package p = mPackages.get(pkgName);
             if (p != null && p.mExtras != null) {
                 PackageSetting ps = (PackageSetting)p.mExtras;

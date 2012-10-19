@@ -1280,7 +1280,7 @@ public class Activity extends ContextThemeWrapper
         //BEGIN CONFIG_EVENT_LOGGING
 	EventLogging eventLogging = EventLogging.getInstance();
 	eventLogging.addEvent(EventLogging.EVENT_EXIT_FOREGROUND, 0,0);
-	eventLogging.exportQueue();
+	eventLogging.onPauseExport();
 	//END
     }
 

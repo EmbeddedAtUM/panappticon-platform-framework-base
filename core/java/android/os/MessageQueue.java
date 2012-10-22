@@ -140,11 +140,11 @@ public class MessageQueue {
             }
 	    //BEGIN CONFIG_EVENT_LOGGING
 	    EventLogging eventlogging = EventLogging.getInstance();
-	    eventlogging.addEvent(EventLogging.MSG_POLL_NATIVE);
+	    eventlogging.addEvent(EventLogging.MSG_POLL_NATIVE, queueid);
 	    //END
             nativePollOnce(mPtr, nextPollTimeoutMillis);
 	    //BEGIN CONFIG_EVENT_LOGGING
-	    eventlogging.addEvent(EventLogging.MSG_POLL_DONE);
+	    eventlogging.addEvent(EventLogging.MSG_POLL_DONE, queueid);
 	    //END
             synchronized (this) {
                 if (mQuiting) {

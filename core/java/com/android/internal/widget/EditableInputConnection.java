@@ -29,6 +29,9 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.widget.TextView;
 
+//BEGIN CONFIG_EVENT_LOGGING
+import java.util.EventLogging;
+//END CONFIG_EVENT_LOGGING
 public class EditableInputConnection extends BaseInputConnection {
     private static final boolean DEBUG = false;
     private static final String TAG = "EditableInputConnection";
@@ -134,6 +137,11 @@ public class EditableInputConnection extends BaseInputConnection {
 
     @Override
     public boolean performEditorAction(int actionCode) {
+    	//BEGIN CONFIG_EVENT_LOGGING
+	Log.d("Lide", "input!");
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_INPUT);
+	//END CONFIG_EVENT_LOGGING
         if (DEBUG) Log.v(TAG, "performEditorAction " + actionCode);
         mTextView.onEditorAction(actionCode);
         return true;

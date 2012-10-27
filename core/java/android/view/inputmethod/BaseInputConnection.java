@@ -35,6 +35,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewRootImpl;
 
+//BEGIN CONFIG_EVENT_LOGGING
+import java.util.EventLogging;
+//END CONFIG_EVENT_LOGGING
 class ComposingText implements NoCopySpan {
 }
 
@@ -205,7 +208,12 @@ public class BaseInputConnection implements InputConnection {
      * @param afterLength
      */
     public boolean deleteSurroundingText(int beforeLength, int afterLength) {
-        if (DEBUG) Log.v(TAG, "deleteSurroundingText " + beforeLength
+        //BEGIN CONFIG_EVENT_LOGGING
+	Log.d("Lide", "new input!");
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_INPUT);
+	//END CONFIG_EVENT_LOGGING
+	if (DEBUG) Log.v(TAG, "deleteSurroundingText " + beforeLength
                 + " / " + afterLength);
         final Editable content = getEditable();
         if (content == null) return false;
@@ -477,7 +485,12 @@ public class BaseInputConnection implements InputConnection {
      * current editable text.
      */
     public boolean setSelection(int start, int end) {
-        if (DEBUG) Log.v(TAG, "setSelection " + start + ", " + end);
+        //BEGIN CONFIG_EVENT_LOGGING
+	Log.d("Lide", "input");
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_INPUT);
+	//END CONFIG_EVENT_LOGGING
+	if (DEBUG) Log.v(TAG, "setSelection " + start + ", " + end);
         final Editable content = getEditable();
         if (content == null) return false;
         int len = content.length();
@@ -530,7 +543,6 @@ public class BaseInputConnection implements InputConnection {
         if (!mDummyMode) {
             return;
         }
-        
         Editable content = getEditable();
         if (content != null) {
             final int N = content.length();
@@ -592,7 +604,12 @@ public class BaseInputConnection implements InputConnection {
 
     private void replaceText(CharSequence text, int newCursorPosition,
             boolean composing) {
-        final Editable content = getEditable();
+        //BEGIN CONFIG_EVENT_LOGGING
+	Log.d("Lide", "input");
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_INPUT);
+	//END CONFIG_EVENT_LOGGING
+	final Editable content = getEditable();
         if (content == null) {
             return;
         }

@@ -7071,7 +7071,7 @@ public class View implements Drawable.Callback, Drawable.Callback2, KeyEvent.Cal
      * @return True if the event was handled, false otherwise.
      */
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (mInputEventConsistencyVerifier != null) {
+	if (mInputEventConsistencyVerifier != null) {
             mInputEventConsistencyVerifier.onKeyEvent(event, 0);
         }
 

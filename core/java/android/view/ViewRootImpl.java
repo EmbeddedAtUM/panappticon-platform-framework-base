@@ -2919,7 +2919,7 @@ public final class ViewRootImpl implements ViewParent,
                 break;
             case MSG_DISPATCH_KEY: {
                 KeyEvent event = (KeyEvent)msg.obj;
-                enqueueInputEvent(event, null, 0, true);
+		enqueueInputEvent(event, null, 0, true);
             } break;
             case MSG_DISPATCH_KEY_FROM_IME: {
                 if (LOCAL_LOGV) Log.v(
@@ -4236,7 +4236,7 @@ public final class ViewRootImpl implements ViewParent,
 	    EventLogging eventLogging = EventLogging.getInstance();
 	    eventLogging.addEvent(EventLogging.UI_INPUT, 0,0);
 	    //END CONFIG_EVENT_LOGGING
-	     enqueueInputEvent(event, this, 0, true);
+	    enqueueInputEvent(event, this, 0, true);
         }
 
         @Override

@@ -37,6 +37,9 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+//BEGIN CONFIG_EVENT_LOGGING
+import java.util.EventLogging;
+//END CONFIG_EVENT_LOGGING
 /**
  * An implementation of SurfaceView that uses the dedicated surface for
  * displaying OpenGL rendering.

@@ -1199,7 +1199,6 @@ static void android_os_BinderProxy_destroy(JNIEnv* env, jobject obj)
 }
 
 // ----------------------------------------------------------------------------
-
 static const JNINativeMethod gBinderProxyMethods[] = {
      /* name, signature, funcPtr */
     {"pingBinder",          "()Z", (void*)android_os_BinderProxy_pingBinder},

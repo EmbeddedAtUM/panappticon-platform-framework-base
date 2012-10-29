@@ -344,7 +344,12 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
      * @param renderer the renderer to use to perform OpenGL drawing.
      */
     public void setRenderer(Renderer renderer) {
-        checkRenderThreadState();
+        //BEGIN CONFIG_EVENT_LOGGING
+	//Log.d("Lide", "openGL: setRenderer");
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.EVENT_OPENGL);
+	//END CONFIG_EVENT_LOGGING
+	checkRenderThreadState();
         if (mEGLConfigChooser == null) {
             mEGLConfigChooser = new SimpleEGLConfigChooser(true);
         }

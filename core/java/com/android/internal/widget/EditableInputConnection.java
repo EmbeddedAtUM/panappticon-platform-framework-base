@@ -60,7 +60,12 @@ public class EditableInputConnection extends BaseInputConnection {
     @Override
     public boolean beginBatchEdit() {
         synchronized(this) {
-            if (mBatchEditNesting >= 0) {
+            //BEGIN CONFIG_EVENT_LOGGING
+	    EventLogging eventlogging = EventLogging.getInstance();
+            eventlogging.addEvent(EventLogging.UI_KEY_BEGIN_BATCH);
+            //END CONFIG_EVENT_LOGGING
+ 
+	    if (mBatchEditNesting >= 0) {
                 mTextView.beginBatchEdit();
                 mBatchEditNesting++;
                 return true;
@@ -72,6 +77,10 @@ public class EditableInputConnection extends BaseInputConnection {
     @Override
     public boolean endBatchEdit() {
         synchronized(this) {
+            //BEGIN CONFIG_EVENT_LOGGING
+	    EventLogging eventlogging = EventLogging.getInstance();
+            eventlogging.addEvent(EventLogging.UI_KEY_END_BATCH);
+            //END CONFIG_EVENT_LOGGING
             if (mBatchEditNesting > 0) {
                 // When the connection is reset by the InputMethodManager and reportFinish
                 // is called, some endBatchEdit calls may still be asynchronously received from the
@@ -100,6 +109,10 @@ public class EditableInputConnection extends BaseInputConnection {
 
     @Override
     public boolean clearMetaKeyStates(int states) {
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+        eventlogging.addEvent(EventLogging.UI_KEY_CLEAR_META);
+        //END CONFIG_EVENT_LOGGING
         final Editable content = getEditable();
         if (content == null) return false;
         KeyListener kl = mTextView.getKeyListener();
@@ -116,6 +129,10 @@ public class EditableInputConnection extends BaseInputConnection {
 
     @Override
     public boolean commitCompletion(CompletionInfo text) {
+        //BEGIN CONFIG_EVENT_LOGGING
+        EventLogging eventlogging = EventLogging.getInstance();
+        eventlogging.addEvent(EventLogging.UI_KEY_COMMIT_COMPLETION);
+        //END CONFIG_EVENT_LOGGING
         if (DEBUG) Log.v(TAG, "commitCompletion " + text);
         mTextView.beginBatchEdit();
         mTextView.onCommitCompletion(text);
@@ -128,6 +145,10 @@ public class EditableInputConnection extends BaseInputConnection {
      */
     @Override
     public boolean commitCorrection(CorrectionInfo correctionInfo) {
+        //BEGIN CONFIG_EVENT_LOGGING
+        EventLogging eventlogging = EventLogging.getInstance();
+        eventlogging.addEvent(EventLogging.UI_KEY_COMMIT_CORRECTION);
+        //END CONFIG_EVENT_LOGGING
         if (DEBUG) Log.v(TAG, "commitCorrection" + correctionInfo);
         mTextView.beginBatchEdit();
         mTextView.onCommitCorrection(correctionInfo);
@@ -138,9 +159,8 @@ public class EditableInputConnection extends BaseInputConnection {
     @Override
     public boolean performEditorAction(int actionCode) {
     	//BEGIN CONFIG_EVENT_LOGGING
-	Log.d("Lide", "input!");
 	EventLogging eventlogging = EventLogging.getInstance();
-	eventlogging.addEvent(EventLogging.UI_KEY_INPUT);
+	eventlogging.addEvent(EventLogging.UI_KEY_PERFORM_EDITOR_ACTION);
 	//END CONFIG_EVENT_LOGGING
         if (DEBUG) Log.v(TAG, "performEditorAction " + actionCode);
         mTextView.onEditorAction(actionCode);
@@ -149,6 +169,10 @@ public class EditableInputConnection extends BaseInputConnection {
     
     @Override
     public boolean performContextMenuAction(int id) {
+    	//BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_PERFORM_CONTEXT_MENU);
+	//END CONFIG_EVENT_LOGGING
         if (DEBUG) Log.v(TAG, "performContextMenuAction " + id);
         mTextView.beginBatchEdit();
         mTextView.onTextContextMenuItem(id);
@@ -158,6 +182,10 @@ public class EditableInputConnection extends BaseInputConnection {
     
     @Override
     public ExtractedText getExtractedText(ExtractedTextRequest request, int flags) {
+    	//BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_GET_EXTRACTED_TEXT);
+	//END CONFIG_EVENT_LOGGING
         if (mTextView != null) {
             ExtractedText et = new ExtractedText();
             if (mTextView.extractText(request, et)) {
@@ -172,6 +200,10 @@ public class EditableInputConnection extends BaseInputConnection {
 
     @Override
     public boolean performPrivateCommand(String action, Bundle data) {
+    	//BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_PERFORM_PRIVATE_COMMAND);
+	//END CONFIG_EVENT_LOGGING
         mTextView.onPrivateIMECommand(action, data);
         return true;
     }
@@ -181,6 +213,7 @@ public class EditableInputConnection extends BaseInputConnection {
         if (mTextView == null) {
             return super.commitText(text, newCursorPosition);
         }
+
         if (text instanceof Spanned) {
             Spanned spanned = ((Spanned) text);
             SuggestionSpan[] spans = spanned.getSpans(0, text.length(), SuggestionSpan.class);

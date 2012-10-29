@@ -169,7 +169,11 @@ public class BaseInputConnection implements InputConnection {
      * MetaKeyKeyListener.clearMetaKeyState(long, int)} to clear the state.
      */
     public boolean clearMetaKeyStates(int states) {
-        final Editable content = getEditable();
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_CLEAR_META);
+	//END CONFIG_EVENT_LOGGING
+	final Editable content = getEditable();
         if (content == null) return false;
         MetaKeyKeyListener.clearMetaKeyState(content, states);
         return true;
@@ -196,7 +200,11 @@ public class BaseInputConnection implements InputConnection {
      */
     public boolean commitText(CharSequence text, int newCursorPosition) {
         if (DEBUG) Log.v(TAG, "commitText " + text);
-        replaceText(text, newCursorPosition, false);
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_COMMIT_COMPLETION);
+	//END CONFIG_EVENT_LOGGING
+	replaceText(text, newCursorPosition, false);
         sendCurrentText();
         return true;
     }
@@ -211,7 +219,7 @@ public class BaseInputConnection implements InputConnection {
         //BEGIN CONFIG_EVENT_LOGGING
 	Log.d("Lide", "new input!");
 	EventLogging eventlogging = EventLogging.getInstance();
-	eventlogging.addEvent(EventLogging.UI_KEY_INPUT);
+	eventlogging.addEvent(EventLogging.UI_KEY_DELETE_TEXT);
 	//END CONFIG_EVENT_LOGGING
 	if (DEBUG) Log.v(TAG, "deleteSurroundingText " + beforeLength
                 + " / " + afterLength);
@@ -272,6 +280,10 @@ public class BaseInputConnection implements InputConnection {
      */
     public boolean finishComposingText() {
         if (DEBUG) Log.v(TAG, "finishComposingText");
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_FINISH_COMPOSING);
+	//END CONFIG_EVENT_LOGGING
         final Editable content = getEditable();
         if (content != null) {
             beginBatchEdit();
@@ -289,6 +301,10 @@ public class BaseInputConnection implements InputConnection {
      */
     public int getCursorCapsMode(int reqModes) {
         if (mDummyMode) return 0;
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_GET_CAPS);
+	//END CONFIG_EVENT_LOGGING
         
         final Editable content = getEditable();
         if (content == null) return 0;
@@ -317,6 +333,10 @@ public class BaseInputConnection implements InputConnection {
      * current cursor position in the buffer.
      */
     public CharSequence getTextBeforeCursor(int length, int flags) {
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_GET_TEXT_BEFORE);
+	//END CONFIG_EVENT_LOGGING
         final Editable content = getEditable();
         if (content == null) return null;
 
@@ -348,6 +368,10 @@ public class BaseInputConnection implements InputConnection {
      * selected.
      */
     public CharSequence getSelectedText(int flags) {
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_GET_SELECTED_TEXT);
+	//END CONFIG_EVENT_LOGGING
         final Editable content = getEditable();
         if (content == null) return null;
 
@@ -373,7 +397,12 @@ public class BaseInputConnection implements InputConnection {
      * current cursor position in the buffer.
      */
     public CharSequence getTextAfterCursor(int length, int flags) {
-        final Editable content = getEditable();
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_GET_TEXT_AFTER);
+	//END CONFIG_EVENT_LOGGING
+        
+	final Editable content = getEditable();
         if (content == null) return null;
 
         int a = Selection.getSelectionStart(content);
@@ -405,7 +434,12 @@ public class BaseInputConnection implements InputConnection {
      * The default implementation turns this into the enter key.
      */
     public boolean performEditorAction(int actionCode) {
-        long eventTime = SystemClock.uptimeMillis();
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_PERFORM_EDITOR_ACTION);
+	//END CONFIG_EVENT_LOGGING
+        
+	long eventTime = SystemClock.uptimeMillis();
         sendKeyEvent(new KeyEvent(eventTime, eventTime,
                 KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER, 0, 0,
                 KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
@@ -439,12 +473,21 @@ public class BaseInputConnection implements InputConnection {
      * in a composing state with the composing style.
      */
     public boolean setComposingText(CharSequence text, int newCursorPosition) {
-        if (DEBUG) Log.v(TAG, "setComposingText " + text);
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_SET_COMPOSING_TEXT);
+	//END CONFIG_EVENT_LOGGING
+       
+	 if (DEBUG) Log.v(TAG, "setComposingText " + text);
         replaceText(text, newCursorPosition, true);
         return true;
     }
 
     public boolean setComposingRegion(int start, int end) {
+        //BEGIN CONFIG_EVENT_LOGGING
+	EventLogging eventlogging = EventLogging.getInstance();
+	eventlogging.addEvent(EventLogging.UI_KEY_SET_COMPOSING_REGION);
+	//END CONFIG_EVENT_LOGGING
         final Editable content = getEditable();
         if (content != null) {
             beginBatchEdit();
@@ -486,9 +529,8 @@ public class BaseInputConnection implements InputConnection {
      */
     public boolean setSelection(int start, int end) {
         //BEGIN CONFIG_EVENT_LOGGING
-	Log.d("Lide", "input");
 	EventLogging eventlogging = EventLogging.getInstance();
-	eventlogging.addEvent(EventLogging.UI_KEY_INPUT);
+	eventlogging.addEvent(EventLogging.UI_KEY_SET_SELECTION);
 	//END CONFIG_EVENT_LOGGING
 	if (DEBUG) Log.v(TAG, "setSelection " + start + ", " + end);
         final Editable content = getEditable();
@@ -518,7 +560,11 @@ public class BaseInputConnection implements InputConnection {
      */
     public boolean sendKeyEvent(KeyEvent event) {
         synchronized (mIMM.mH) {
-            ViewRootImpl viewRootImpl = mTargetView != null ? mTargetView.getViewRootImpl() : null;
+            //BEGIN CONFIG_EVENT_LOGGING
+	    EventLogging eventlogging = EventLogging.getInstance();
+	    eventlogging.addEvent(EventLogging.UI_KEY_SEND_KEY);
+	    //END CONFIG_EVENT_LOGGING
+	    ViewRootImpl viewRootImpl = mTargetView != null ? mTargetView.getViewRootImpl() : null;
             if (viewRootImpl == null) {
                 if (mIMM.mServedView != null) {
                     viewRootImpl = mIMM.mServedView.getViewRootImpl();
@@ -604,11 +650,6 @@ public class BaseInputConnection implements InputConnection {
 
     private void replaceText(CharSequence text, int newCursorPosition,
             boolean composing) {
-        //BEGIN CONFIG_EVENT_LOGGING
-	Log.d("Lide", "input");
-	EventLogging eventlogging = EventLogging.getInstance();
-	eventlogging.addEvent(EventLogging.UI_KEY_INPUT);
-	//END CONFIG_EVENT_LOGGING
 	final Editable content = getEditable();
         if (content == null) {
             return;

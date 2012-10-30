@@ -304,11 +304,10 @@ public final class Choreographer {
             final long now = SystemClock.uptimeMillis();
             final long dueTime = now + delayMillis;
             mCallbackQueues[callbackType].addCallbackLocked(dueTime, action, token);
-
             if (dueTime <= now) {
                 scheduleFrameLocked(now);
             } else {
-                Message msg = mHandler.obtainMessage(MSG_DO_SCHEDULE_CALLBACK, action);
+		Message msg = mHandler.obtainMessage(MSG_DO_SCHEDULE_CALLBACK, action);
                 msg.arg1 = callbackType;
                 msg.setAsynchronous(true);
                 mHandler.sendMessageAtTime(msg, dueTime);
@@ -464,7 +463,7 @@ public final class Choreographer {
                 if (isRunningOnLooperThreadLocked()) {
                     scheduleVsyncLocked();
                 } else {
-                    Message msg = mHandler.obtainMessage(MSG_DO_SCHEDULE_VSYNC);
+	            Message msg = mHandler.obtainMessage(MSG_DO_SCHEDULE_VSYNC);
                     msg.setAsynchronous(true);
                     mHandler.sendMessageAtFrontOfQueue(msg);
                 }
@@ -474,11 +473,6 @@ public final class Choreographer {
                 if (DEBUG) {
                     Log.d(TAG, "Scheduling next frame in " + (nextFrameTime - now) + " ms.");
                 }
-		//BEGIN CONFIG_EVNET_LOGGING
-                //Log.i("Lide", "Update display");
-		//EventLogging eventLogging = EventLogging.getInstance();
-		//eventLogging.addEvent(EventLogging.UI_TRAVERSAL, 0,0);
-		//END 
 		Message msg = mHandler.obtainMessage(MSG_DO_FRAME);
                 msg.setAsynchronous(true);
                 mHandler.sendMessageAtTime(msg, nextFrameTime);

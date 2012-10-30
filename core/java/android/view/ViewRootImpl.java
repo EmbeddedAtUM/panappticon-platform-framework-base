@@ -971,7 +971,7 @@ public final class ViewRootImpl implements ViewParent,
     void scheduleTraversals() {
         //BEGIN CONFIG_EVENT_LOGGING
 	EventLogging eventlogging = EventLogging.getInstance();
-	eventlogging.addEvent(EventLogging.UI_INVALIDATE);
+	eventlogging.addEvent(EventLogging.UI_INVALIDATE, mTraversalScheduled);
 	//END CONFIG_EVENT_LOGGING
 	if (!mTraversalScheduled) {
             mTraversalScheduled = true;

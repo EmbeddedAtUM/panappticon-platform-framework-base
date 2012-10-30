@@ -22,6 +22,9 @@ import android.os.Looper;
 import android.os.MessageQueue;
 import android.util.Log;
 
+//BEGIN CONFIG_EVENT_LOGGING
+import java.util.EventLogging;
+//END CONFIG_EVENT_LOGGING
 /**
  * Provides a low-level mechanism for an application to receive display events
  * such as vertical sync.
@@ -107,6 +110,10 @@ public abstract class DisplayEventReceiver {
             Log.w(TAG, "Attempted to schedule a vertical sync pulse but the display event "
                     + "receiver has already been disposed.");
         } else {
+	    //BEGIN CONFIG_EVENT_LOGGING
+	    EventLogging eventlogging = EventLogging.getInstance();
+	    eventlogging.addEvent(EventLogging.UI_UPDATE_VSYNC_SCHEDULE);
+	    //END CONFIG_EVENT_LOGGING
             nativeScheduleVsync(mReceiverPtr);
         }
     }
@@ -114,6 +121,10 @@ public abstract class DisplayEventReceiver {
     // Called from native code.
     @SuppressWarnings("unused")
     private void dispatchVsync(long timestampNanos, int frame) {
+        //BEGIN CONFIG_EVENT_LOGGING
+        EventLogging eventlogging = EventLogging.getInstance();
+        eventlogging.addEvent(EventLogging.UI_UPDATE_DISPATCH);
+        //END CONFIG_EVENT_LOGGING
         onVsync(timestampNanos, frame);
     }
 }
